@@ -1,15 +1,15 @@
 const mysql = require('mysql');
 const jwt = require('jsonwebtoken');
 
-module.exports.genJWT = function ({ id, email, password, role, submission_time }) {
+module.exports.genJWT = function ({ id, email, password, role, submission_time, verified }) {
     return new Promise((resolve, reject) => {
-        console.log(process.env.JWT_SECRET_KEY);
         const token = jwt.sign({
             id: id,
             email: email,
             password: password,
             role: role,
             submission_time: submission_time,
+            verified: verified
         }, process.env.JWT_SECRET_KEY, { expiresIn: "7d" });
         if (token) {
             resolve(token);
@@ -41,9 +41,9 @@ module.exports.dbConnect = (dbhost) => {
     })
 }
 
-module.exports.dbCreateUser = (connection, { email, password, role }) => {
+module.exports.dbCreateUser = (connection, { email, password, role, code }) => {
     return new Promise((resolve, reject) => {
-        const userInsertionSql = `INSERT INTO freela13_freelancebangla.users (email,password,role) VALUES ('${email}', '${password}','${role}')`;
+        const userInsertionSql = `INSERT INTO freela13_freelancebangla.users (email,password,role,code) VALUES ('${email}', '${password}','${role}','${code}')`;
         const roles = ['admin', 'client', 'worker'];
         if (!roles.includes(role)) {
             reject(new Error(`there is no role for your specified alike ${role}`))

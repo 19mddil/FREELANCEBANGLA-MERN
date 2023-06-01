@@ -1,9 +1,10 @@
 import React from "react";
 import { Component } from "react";
-import { isAuthenticated, userInfo } from '../../utils/auth';
+import { isAuthenticated, isEmailVarified, userInfo } from '../../utils/auth';
 import Layout from "../Layout";
 import LoadJobs from "../user/worker/LoadJobs";
 import LoadWorkers from '../user/client/LoadWorkers';
+import { Link } from "react-router-dom";
 // ayer utsho akhn desher website ah
 class Home extends Component {
     render() {
@@ -16,6 +17,7 @@ class Home extends Component {
 
                         <div className='row'>
                             <p>Hi, {userInfo().role} user, email: {userInfo().email}</p>
+                            {isEmailVarified() === false && (<Link to='/email/verify'>Verify Email</Link>)}
                             {userInfo().role === 'worker' && (<LoadJobs />)}
                             {userInfo().role === 'client' && (<LoadWorkers />)}
                         </div>

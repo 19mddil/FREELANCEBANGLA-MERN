@@ -14,6 +14,7 @@ const Layout = ({ title = 'Title', className, children }) => {
                     <h4 style={{ textAlign: 'center' }}>FREELANCEBANGLA</h4>
                     <p style={{ textAlign: 'center' }}>Your countries webpage to earn money by your skills.</p>
                 </div>
+
             </div >
             <div className={className}>
                 <div>

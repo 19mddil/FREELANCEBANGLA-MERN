@@ -18,3 +18,12 @@ export const login = user => {
         }
     })
 }
+
+export const emailVerify = (token, code) => {
+    return axios.post(`${API}/user/email/verify`, code, {
+        headers: {
+            'Authorization': `${token}`,
+            'Content-Type': 'application/json'
+        }
+    })
+}

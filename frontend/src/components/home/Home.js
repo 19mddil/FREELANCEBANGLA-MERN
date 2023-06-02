@@ -17,7 +17,7 @@ class Home extends Component {
 
                         <div className='row'>
                             <p>Hi, {userInfo().role} user, email: {userInfo().email}</p>
-                            {isEmailVarified() === false && (<Link to='/email/verify'>Verify Email</Link>)}
+                            {isEmailVarified() === false && (<Link to='/send/email'>Verify Email</Link>)}
                             {userInfo().role === 'worker' && (<LoadJobs />)}
                             {userInfo().role === 'client' && (<LoadWorkers />)}
                         </div>

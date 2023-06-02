@@ -59,7 +59,7 @@ module.exports.SignIn = async (req, res) => {
         if (boolvar) {
             let _token = await genJWT(result[0]);
             connection.destroy();
-            return res.status(201).send({ messeage: "Login Successful", user: result[0], token: _token });
+            return res.status(201).send({ message: "Login Successful", user: result[0], token: _token });
         } else {
             return res.status(403).send("username or password error");
         }
@@ -68,9 +68,12 @@ module.exports.SignIn = async (req, res) => {
     }
 }
 
-module.exports.EmailVerify = async (req, res) => {
+module.exports.SendEmail = async (req, res) => {
     try {
-        await sendMail(req.body.email, "Verify Code", req.body.code);
+        console.log("Sending Email....");
+        console.log(req.body);
+        //await sendMail(req.body.email, "Verify Code", req.body.code);
+        res.status(201).send({ message: "email sent successfully" })
     } catch (err) {
         return res.status(500).send(new Error("Email couldn't be sent"));
     }

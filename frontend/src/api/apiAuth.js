@@ -19,8 +19,17 @@ export const login = user => {
     })
 }
 
-export const emailVerify = (token, code) => {
-    return axios.post(`${API}/user/email/verify`, code, {
+export const sendEmail = (token, code) => {
+    return axios.post(`${API}/user/send/email`, code, {
+        headers: {
+            'Authorization': `${token}`,
+            'Content-Type': 'application/json'
+        }
+    })
+}
+
+export const verifyUser = (token, email) => {
+    return axios.put(`${API}/user/email/verify`, email, {
         headers: {
             'Authorization': `${token}`,
             'Content-Type': 'application/json'

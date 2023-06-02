@@ -1,31 +1,30 @@
 import React, { Component } from 'react';
 import Layout from '../Layout';
-import { showError, showLoading, showEmailSent, showEmailNotSent } from '../../utils/messages';
+import { showError, showLoading, showEmailSent, showEmailNotSent, showSuccess } from '../../utils/messages';
 import { userInfo } from '../../utils/auth';
-import { emailVerify } from '../../api/apiAuth';
+import { sendEmail, verifyUser } from '../../api/apiAuth';
 import { Navigate } from 'react-router';
 
 class EmailVerify extends Component {
     state = {
-        code: '',
+        code: '' + Math.floor(100000 + Math.random() * 900000),
         inputCode: '',
         error: false,
-        loading: false,
-        disabled: false,
+        loading: true,
+        disabled: true,
         redirect: false,
         success: false,
         emailSuccess: false,
         emailNotSuccess: false,
     }
 
-    componentDidMount() {
-        this.setState({
-            loading: true,
-            code: Math.floor(100000 + Math.random() * 900000),
-        })
+    componentDidMount = () => {
+        console.log(this.state.code);
+        console.log(this.state.loading);
         const { token, email } = userInfo();
-        emailVerify(token, { code: this.state.code, email: email })
+        sendEmail(token, { code: this.state.code, email: email })
             .then(res => {
+                console.log(res.data);
                 this.setState({
                     emailSuccess: true,
                     loading: false,
@@ -56,35 +55,63 @@ class EmailVerify extends Component {
             disabled: true,
         });
         //check whether the email code and the input code is the same
+        if (this.state.inputCode === this.state.code) {
+            const { token, email } = userInfo();
+            verifyUser(token, { email: email })
+                .then(res => {
+                    this.setState({
+                        error: false,
+                        loading: false,
+                        success: true,
+                        disabled: true,
+                    })
+                })
+                .catch();
+
+        } else {
+            this.setState({
+                error: true,
+                loading: false,
+                success: false,
+                disabled: false
+            })
+        }
         //the go back to back end and save varified true for this user
         //them comeback with a new token in response and delete the old one and set it again.
     }
-    redirectUser = () => {
+    redirectUserEmailNotSuccess = () => {
         if (this.state.emailNotSuccess) {
             return (<Navigate to='/' />)
         }
     }
     verificationForm = () => {
-        <form onSubmit={this.handleSubmit}>
+        (<form onSubmit={this.handleSubmit}>
             <div className="form-group">
                 <label className='text-muted'>Enter Six Digit Code:</label>
-                <input name='inputCode' type='number' className='form-control' value={this.state.inputCode} required onChange={this.handleChange} disabled={this.state.disabled} />
+                <input name='inputCode' type='number' className='form-control' value={this.state.inputCode} required onChange={this.handleChange} />
             </div>
-            <button type="submit" className='btn btn-outline-primary' disabled={this.state.disabled}>Verify</button>
-        </form>
+            <button type="submit" className='btn btn-outline-primary' >Verify</button>
+        </form>)
     }
     render() {
         return (
             <Layout title="Email Verification" className="container col-md-8 offset-md-2">
 
                 {showEmailNotSent(this.state.emailNotSuccess, "Email couldn't be sent")}
-                {this.redirectUser()}
-                {showEmailSent(this.state.emailSuccess, "An Email has been sent")}
+                {this.redirectUserEmailNotSuccess()}
+                {showEmailSent(this.state.emailSuccess, "An Email has been sent, Check your Latest Email from freelancebangla.com")}
                 {showLoading(this.state.loading)}
-                {showError(this.state.error, this.state.error)}
+                {showError(this.state.error, "Pin did not match, Try again")}
+                {showSuccess(this.state.success, "Email Verified")}
                 <h3>Verify Here,</h3>
                 <hr />
-                {this.signInForm()}
+                <form onSubmit={this.handleSubmit} >
+                    <div className="form-group">
+                        <label className='text-muted'>Enter Six Digit Code:</label>
+                        <input name='inputCode' type='number' className='form-control' value={this.state.inputCode} required onChange={this.handleChange} disabled={this.state.disabled} />
+                    </div>
+                    <button type="submit" className='btn btn-outline-primary' disabled={this.state.disabled}>Verify</button>
+                </form>
                 <hr />
             </Layout>
         );

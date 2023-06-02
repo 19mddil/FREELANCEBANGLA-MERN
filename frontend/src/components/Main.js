@@ -32,7 +32,7 @@ class Main extends Component {
                 <Route path='/login' element={this.state.auth || isAuthenticated() ? (<Home />) : (<Login />)} />
                 <Route path='/register' element={this.state.auth || isAuthenticated() ? (<Home />) : (<Register />)} />
                 <Route path='/logout' element={<Navigate to='/Login' />} />
-                <Route path='/email/verify' element={(this.state.auth || isAuthenticated()) === true && (isEmailVarified() === false) ? (<EmailVerify />) : (<Home />)} />
+                <Route path='/send/email' element={(this.state.auth || isAuthenticated()) === true && (isEmailVarified() === false) ? (<EmailVerify />) : (<Home />)} />
                 <Route
                     path='/user/dashboard'
                     element={

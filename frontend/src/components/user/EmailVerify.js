@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Layout from '../Layout';
 import { showError, showLoading, showEmailSent, showEmailNotSent, showSuccess } from '../../utils/messages';
-import { userInfo } from '../../utils/auth';
+import { authenticate, userInfo } from '../../utils/auth';
 import { sendEmail, verifyUser } from '../../api/apiAuth';
 import { Navigate } from 'react-router';
 
@@ -56,17 +56,26 @@ class EmailVerify extends Component {
         });
         //check whether the email code and the input code is the same
         if (this.state.inputCode === this.state.code) {
-            const { token, email } = userInfo();
-            verifyUser(token, { email: email })
+            const { token, email, role } = userInfo();
+            verifyUser(token, { email: email, role: role })
                 .then(res => {
-                    this.setState({
-                        error: false,
-                        loading: false,
-                        success: true,
-                        disabled: true,
+                    authenticate(res.data.token, () => {
+                        this.setState({
+                            error: false,
+                            loading: false,
+                            success: true,
+                            disabled: true,
+                        })
                     })
                 })
-                .catch();
+                .catch(err => {
+                    this.setState({
+                        error: true,
+                        loading: false,
+                        success: false,
+                        disabled: false,
+                    })
+                });
 
         } else {
             this.setState({
@@ -83,15 +92,6 @@ class EmailVerify extends Component {
         if (this.state.emailNotSuccess) {
             return (<Navigate to='/' />)
         }
-    }
-    verificationForm = () => {
-        (<form onSubmit={this.handleSubmit}>
-            <div className="form-group">
-                <label className='text-muted'>Enter Six Digit Code:</label>
-                <input name='inputCode' type='number' className='form-control' value={this.state.inputCode} required onChange={this.handleChange} />
-            </div>
-            <button type="submit" className='btn btn-outline-primary' >Verify</button>
-        </form>)
     }
     render() {
         return (

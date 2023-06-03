@@ -28,8 +28,8 @@ export const sendEmail = (token, code) => {
     })
 }
 
-export const verifyUser = (token, email) => {
-    return axios.put(`${API}/user/email/verify`, email, {
+export const verifyUser = (token, data) => {
+    return axios.post(`${API}/user/email/verify`, data, {
         headers: {
             'Authorization': `${token}`,
             'Content-Type': 'application/json'

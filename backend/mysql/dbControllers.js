@@ -43,7 +43,7 @@ module.exports.dbConnect = (dbhost) => {
 
 module.exports.dbCreateUser = (connection, { email, password, role, code }) => {
     return new Promise((resolve, reject) => {
-        const userInsertionSql = `INSERT INTO freela13_freelancebangla.users (email,password,role,code) VALUES ('${email}', '${password}','${role}','${code}')`;
+        const userInsertionSql = `INSERT INTO freela13_freelancebangla.users (email,password,role) VALUES ('${email}', '${password}','${role}')`;
         const roles = ['admin', 'client', 'worker'];
         if (!roles.includes(role)) {
             reject(new Error(`there is no role for your specified alike ${role}`))
@@ -246,6 +246,23 @@ module.exports.dbUpdateRejectedJobApplicationByApplicationId = (connection, { re
             }
             else {
                 resolve(results)
+            }
+        })
+    })
+}
+
+module.exports.dbUddateUserVerifiedStatus = (connection, email) => {
+    return new Promise((resolve, reject) => {
+        const UddateUserVerifiedStatusSql =
+            `
+                UPDATE freela13_freelancebangla.users SET verified = 'true' WHERE (email = '${email}')
+            `;
+        connection.query(UddateUserVerifiedStatusSql, function (error, result) {
+            if (error) {
+                console.log(error);
+                reject(error);
+            } else {
+                resolve(result)
             }
         })
     })

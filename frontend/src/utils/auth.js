@@ -2,6 +2,7 @@ import jwt_decode from 'jwt-decode'
 
 export const authenticate = (token, cb) => {
     if (typeof window !== 'undefined') {
+        localStorage.removeItem('jwt');
         localStorage.setItem('jwt', JSON.stringify(token));
         cb();
     }

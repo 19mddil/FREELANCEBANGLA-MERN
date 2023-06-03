@@ -4,6 +4,7 @@ import { showError, showLoading } from '../../utils/messages';
 import { login } from '../../api/apiAuth';
 import { Navigate } from "react-router";
 import { authenticate } from '../../utils/auth';
+import { Link } from 'react-router-dom';
 
 class Login extends Component {
     state = {
@@ -84,6 +85,7 @@ class Login extends Component {
                 <label className="text-muted">Password:</label>
                 <input name="password" type="password" className="form-control"
                     value={this.state.password} required onChange={this.handleChange} />
+                <Link to='/forgot/password'>Forgot Password</Link>
             </div>
             <div className='form-group'>
                 <label className="text-muted">Log in as:</label>
@@ -99,6 +101,7 @@ class Login extends Component {
                 </label>
             </div>
             <button type="submit" className="btn btn-outline-primary" disabled={this.state.disabled}>Login</button>
+
         </form>
     );
 

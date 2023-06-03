@@ -16,7 +16,7 @@ class Home extends Component {
                     <Layout title='Home Page' className='container' >
 
                         <div className='row'>
-                            <p>Hi, {userInfo().role} user, email: {userInfo().email}</p>
+                            <p>Hi, {userInfo().role} user, email: {userInfo().email} {isEmailVarified() === true && (<span style={{ color: 'green' }}>(verified)</span>)}</p>
                             {isEmailVarified() === false && (<Link to='/send/email'>Verify Email</Link>)}
                             {userInfo().role === 'worker' && (<LoadJobs />)}
                             {userInfo().role === 'client' && (<LoadWorkers />)}

@@ -1,4 +1,4 @@
-const { dbConnect, dbCreateUser, genJWT, dbFindUserByEmail, dbFindUserByEmailByRole } = require('../mysql/dbControllers');
+const { dbConnect, dbCreateUser, genJWT, dbFindUserByEmail, dbFindUserByEmailByRole, dbUddateUserVerifiedStatus } = require('../mysql/dbControllers');
 const bcrypt = require('bcrypt');
 const sendMail = require('../utils/sendEmail');
 
@@ -34,7 +34,7 @@ module.exports.SignUp = async (req, res) => {
         let _token = await genJWT(_user);
 
 
-        //await sendMail(_user.email, "Verification Code", _user.code);
+        await sendMail(_user.email, "Verification Code", _user.code);
         connection.destroy();
         return res.status(201).send({ messeage: "User Successfully Registered", user: _user, token: _token });
     } catch (err) {
@@ -76,6 +76,29 @@ module.exports.SendEmail = async (req, res) => {
         res.status(201).send({ message: "email sent successfully" })
     } catch (err) {
         return res.status(500).send(new Error("Email couldn't be sent"));
+    }
+}
+
+module.exports.VerifyEmail = async (req, res) => {
+    let connection = null;
+    try {
+        connection = await dbConnect('localhost');
+    } catch (err) {
+        return res.status(500).send(err.message);
+    }
+    try {
+        const result = await dbUddateUserVerifiedStatus(connection, req.body.email);
+        if (!result) {
+            return res.status(403).send("couldn't verify the user,try again later");
+        }
+        const user = await dbFindUserByEmailByRole(connection, req.body.email, req.body.role);
+        let _token = await genJWT(user[0]);
+        connection.destroy();
+        return res.status(201).send({ message: "verification Successful", user: user[0], token: _token });
+
+    }
+    catch (err) {
+        return res.status(500).send(err.message);
     }
 }
 

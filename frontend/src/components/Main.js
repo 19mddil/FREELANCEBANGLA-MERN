@@ -12,6 +12,7 @@ import JobAdvertise from './user/client/JobAdvertise';
 import LoadAdvertisedJobs from './user/client/LoadAdvertisedJobs';
 import LoadJobApplicantsByJobId from './user/client/LoadJobApplicantsByJobId';
 import EmailVerify from './user/EmailVerify';
+import ForgotPassword from './user/ForgotPassword';
 
 import Application from './user/worker/Application';
 
@@ -30,6 +31,7 @@ class Main extends Component {
             <Routes>
                 <Route path='/' element={<Home />} />
                 <Route path='/login' element={this.state.auth || isAuthenticated() ? (<Home />) : (<Login />)} />
+                <Route path='/forgot/password' element={this.state.auth || isAuthenticated() ? (<Home />) : (<ForgotPassword />)} />
                 <Route path='/register' element={this.state.auth || isAuthenticated() ? (<Home />) : (<Register />)} />
                 <Route path='/logout' element={<Navigate to='/Login' />} />
                 <Route path='/send/email' element={(this.state.auth || isAuthenticated()) === true && (isEmailVarified() === false) ? (<EmailVerify />) : (<Home />)} />

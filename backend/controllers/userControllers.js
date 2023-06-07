@@ -102,3 +102,7 @@ module.exports.VerifyEmail = async (req, res) => {
     }
 }
 
+module.exports.ForgotPassword = async (req, res) => {
+
+}
+

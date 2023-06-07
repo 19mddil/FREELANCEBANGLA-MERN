@@ -28,6 +28,14 @@ export const sendEmail = (token, code) => {
     })
 }
 
+export const sendEmailForForgottenPassword = (code) => {
+    return axios.post(`${API}/user/send/email/forgot/password`, code, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+}
+
 export const verifyUser = (token, data) => {
     return axios.post(`${API}/user/email/verify`, data, {
         headers: {

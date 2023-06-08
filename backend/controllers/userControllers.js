@@ -1,7 +1,5 @@
 const { dbConnect, dbCreateUser, genJWT, dbFindUserByEmail, dbFindUserByEmailByRole, dbUddateUserVerifiedStatus } = require('../mysql/dbControllers');
 const bcrypt = require('bcrypt');
-const sendMail = require('../utils/sendEmail');
-
 
 module.exports.SignUp = async (req, res) => {
     let connection = null;
@@ -32,9 +30,6 @@ module.exports.SignUp = async (req, res) => {
             id: result.insertId
         }
         let _token = await genJWT(_user);
-
-
-        await sendMail(_user.email, "Verification Code", _user.code);
         connection.destroy();
         return res.status(201).send({ messeage: "User Successfully Registered", user: _user, token: _token });
     } catch (err) {
@@ -102,7 +97,40 @@ module.exports.VerifyEmail = async (req, res) => {
     }
 }
 
-module.exports.ForgotPassword = async (req, res) => {
+module.exports.SetNewPassword = async (req, res) => {
+    let connection = null;
+    try {
+        connection = await dbConnect('localhost');
+    } catch (err) {
+        return res.status(500).send(err.message);
+    }
+    try {
+        const results = await dbFindUserByEmail(connection, req.body.email);
+        let found = false;
+        if (results) {
+            results.map(function (result) {
+                if (result.role === req.body.role) {
+                    found = true
+                }
+            })
+        }
+        if (!found) return res.status(409).send("User does not exist, Please Register.");
+        const salt = await bcrypt.genSalt(10);
+        req.body.password = await bcrypt.hash(req.body.password, salt);
+        req.body.verified = 'true';
+
+
+        const result = await dbUpdateUserPasswordWithEmailAndRole(connection, req.body);
+        const _user = {
+            ...req.body,
+            id: result.insertId
+        }
+        connection.destroy();
+        return res.status(201).send({ messeage: "User Password Successfully Updated", user: _user });
+    } catch (err) {
+        connection.destroy();
+        return res.status(500).send(err.message);
+    }
 
 }
 

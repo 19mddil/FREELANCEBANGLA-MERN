@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { SignUp, SignIn, SendEmail, VerifyEmail, ForgotPassword } = require('../controllers/userControllers');
+const { SignUp, SignIn, SendEmail, VerifyEmail, SetNewPassword } = require('../controllers/userControllers');
 const authorize = require('../middlewares/authorize');
 
 router.route('/signup')
@@ -15,7 +15,7 @@ router.route('/send/email/forgot/password')
 router.route('/email/verify')
     .post([authorize], VerifyEmail);
 
-router.route('/forgot/password')
-    .post(ForgotPassword);
+router.route('/set/new/password')
+    .post(SetNewPassword);
 
 module.exports = router;

@@ -268,6 +268,23 @@ module.exports.dbUddateUserVerifiedStatus = (connection, email) => {
     })
 }
 
+module.exports.dbUpdateUserPasswordWithEmailAndRole = (connecion, { email, password, role }) => {
+    return new Promise((resolve, reject) => {
+        const UpdateUserPasswordWithEmailAndRole =
+            `
+               UPDATE freela13_freelancebangla.users SET verified = 'true',password = '${password}' WHERE (email = '${email}' and role ='${role}');
+            `;
+        connection.query(UpdateUserPasswordWithEmailAndRole, function (error, result) {
+            if (error) {
+                console.log(error);
+                reject(error);
+            } else {
+                resolve(result)
+            }
+        })
+    })
+}
+
 
 
 
